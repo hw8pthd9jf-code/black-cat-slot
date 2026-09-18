@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BLACK CAT SLOT</title>
+<style>
+*{box-sizing:border-box}
+:root{--machine-w:350px;--reel-h:64px;--symbol-size:38px;--control-h:49px}
+body{margin:0;background:#020104;color:#eee;font-family:Arial,sans-serif;touch-action:manipulation}
+.machine{width:min(94%,var(--machine-w));margin:auto;padding:3px;background:linear-gradient(#050308,#13051b,#020104);min-height:100dvh}
+.panel{border:2px solid #553060;border-radius:12px;background:radial-gradient(circle at 50% 30%,#270538,#08010c 70%);box-shadow:inset 0 0 18px #8e30bb55,0 0 6px #8d38b7}
+.hero{height:68px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero:before{content:"🐈‍⬛";font-size:45px;position:absolute;left:10px;opacity:.38}.hero:after{content:"🎸";font-size:44px;position:absolute;right:3px;transform:rotate(-15deg);opacity:.35}
+.poem{font-size:18px;font-weight:1000;line-height:1.05;text-shadow:0 0 10px #c85cff;z-index:1}.chance{font-size:11px;letter-spacing:2px;margin-top:8px;color:#dfb7ff}
+.reelbox{margin-top:3px;padding:2px;background:#050306;border:3px solid #3b3440;border-radius:12px}
+.reels{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;height:var(--reel-h);overflow:hidden}
+.reel{background:#eee;border-radius:7px;overflow:hidden;position:relative;border:2px solid #222}
+.strip{position:absolute;left:0;right:0;top:0}.cell{height:72px;display:flex;align-items:center;justify-content:center;font-size:var(--symbol-size);background:linear-gradient(#fff,#ddd);border-bottom:1px solid #bbb}
+.payline{position:absolute;left:0;right:0;top:50%;border-top:2px solid #e73a83;z-index:4;opacity:.55}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:4px}.stat{background:#08010b;border:1px solid #8d3bbb;border-radius:6px;padding:3px;text-align:center}
+.stat span{display:block;font-size:9px;color:#d9b2f2}.stat b{font:900 18px monospace;color:#ff2e72;text-shadow:0 0 7px #ff2e72}.stat small{font-size:9px}
+.substats{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:3px;margin-top:3px}.mini{border:1px solid #683088;border-radius:8px;background:#08010b;padding:3px;text-align:center;font-size:9px;color:#d9b2f2}.mini b{display:block;color:#ff2e72;font:900 16px monospace}
+.add{width:100%;margin-top:5px;min-height:36px;border:2px solid #a64cdf;border-radius:9px;background:linear-gradient(#5c0d82,#2a073d);color:white;font-weight:900;font-size:13px;box-shadow:0 0 12px #b54cff}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-top:4px}.btn{min-height:var(--control-h);border-radius:50%;border:3px solid #27242a;background:radial-gradient(circle,#29252c,#08080a 70%);color:#d89cff;font-weight:900;font-size:12px;box-shadow:inset 0 0 10px #000}.btn:disabled{opacity:.35}.max,.lever{border-radius:11px;background:linear-gradient(#7822a4,#31064a);border:2px solid #b965e4;color:white;box-shadow:0 0 10px #a53ad8}.lever{font-size:13px}
+.msg{text-align:center;min-height:24px;margin:6px 0 0;font-weight:900;color:#e5c7ff;text-shadow:0 0 8px #b94cff}
+.bonus{height:52px;margin-top:7px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}.bonus:before{content:"🐈‍⬛";font-size:52px;position:absolute;left:10px;opacity:.35}.bonus:after{content:"🎸";font-size:52px;position:absolute;right:7px;opacity:.32}
+.big{font-size:17px;font-weight:1000;font-style:italic;text-shadow:0 0 11px #bc49ff}.seven{font-size:22px;color:#ff3d4f;text-shadow:3px 2px #ffb21f}
+#fx{display:none;position:fixed;inset:0;background:#07000deF;z-index:30;align-items:center;justify-content:center;text-align:center}#fx.on{display:flex;animation:flash .5s ease}.fxbig{font-size:42px;font-weight:1000;text-shadow:0 0 20px #d554ff}.fxpoem{font-size:30px;font-weight:1000;margin-top:16px}@keyframes flash{0%{background:#bd3cff}25%{background:#08000e}45%{background:#8420aa}100%{background:#07000d}}
+
+.settingsToggle{width:100%;margin-top:6px;min-height:38px;border:1px solid #75418c;border-radius:8px;background:#100717;color:#dcb9ee;font-weight:800}
+.settings{display:none;margin-top:5px;padding:8px;border:1px solid #63317b;border-radius:9px;background:#08040c}
+.settings.open{display:block}
+.setting{display:grid;grid-template-columns:105px 1fr 42px;align-items:center;gap:7px;margin:7px 0;font-size:11px;color:#e3c9ee}
+.setting input{width:100%;accent-color:#9d47c4}
+.setting output{text-align:right;font:700 11px monospace;color:#f0b9ff}
+.resetSize{width:100%;min-height:34px;margin-top:4px;border:1px solid #75418c;border-radius:7px;background:#1b0b25;color:#eee}
+@media(max-height:760px){.hero{height:92px}.poem{font-size:23px}.reels{height:184px}.cell{height:60px}.bonus{height:75px}.controls .btn{min-height:54px}}
+</style></head><body><main class="machine">
+<section class="panel hero"><div><div class="poem">壊して、<br>また始まる。</div><div class="chance">🐾 BLACK CAT CHANCE 🐾</div></div></section>
+<section class="reelbox"><div class="reels" id="reels"><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div><div class="payline"></div></div>
+<div class="stats"><div class="stat"><span>CREDIT</span><b id="credit">50</b><small> 枚</small></div><div class="stat"><span>BET</span><b id="bet">0</b><small> 枚</small></div><div class="stat"><span>MEDAL</span><b id="medal">50</b><small> 枚</small></div><div class="stat"><span>PAYOUT</span><b id="payout">0</b><small> 枚</small></div></div>
+<div class="substats"><div class="mini">現在ゲーム数<b id="currentG">0</b>G</div><div class="mini">TOTAL<b id="totalG">0</b>G</div><div class="mini">BIG <span id="bigCount">0</span>　REG <span id="regCount">0</span><br>合成 <span id="rate">0/0</span></div></div>
+<button class="add" id="add">🐈‍⬛ メダル追加 ＋50枚</button>
+<div class="controls"><button class="btn max" id="max">MAX<br>BET</button><button class="btn stop" disabled>STOP<br>1</button><button class="btn stop" disabled>STOP<br>2</button><button class="btn stop" disabled>STOP<br>3</button><button class="btn lever" id="lever" disabled style="grid-column:1/-1;min-height:38px;border-radius:10px">🎸 LEVER　— ジャーン！ —</button></div>
+<div class="msg" id="msg">MAX BETを押してスタート</div></section>
+<section class="panel bonus"><div><div class="big">BIG BONUS</div><div class="seven">7 7 7</div><div class="chance">🐾 BLACK CAT CHANCE 🐾</div></div></section>
+<button type="button" class="settingsToggle" id="settingsToggle">⚙️ サイズ調整</button>
+<section class="settings" id="settingsPanel">
+  <label class="setting">全体の横幅<input id="sizeWhole" type="range" min="280" max="430" value="350"><output id="outWhole">350</output></label>
+  <label class="setting">リールの高さ<input id="sizeReel" type="range" min="45" max="180" value="64"><output id="outReel">64</output></label>
+  <label class="setting">絵柄の大きさ<input id="sizeSymbol" type="range" min="20" max="60" value="38"><output id="outSymbol">38</output></label>
+  <label class="setting">ボタンの大きさ<input id="sizeButton" type="range" min="40" max="80" value="49"><output id="outButton">49</output></label>
+  <button type="button" class="resetSize" id="resetSize">初期サイズに戻す</button>
+</section>
+<div id="fx"><div><div class="fxbig">BIG BONUS<br><span class="seven">7 7 7</span></div><div class="fxpoem">壊して、<br>また始まる。</div></div></div>
+</main><script>
+(()=>{
+const symbols=["🐈‍⬛","🍒","7️⃣","👿","🌹","🔔","🖤","🎸"], reels=[...document.querySelectorAll(".reel")], strips=[...document.querySelectorAll(".strip")], stops=[...document.querySelectorAll(".stop")];
+const $=id=>document.getElementById(id); let credit=50,bet=0,payout=0,currentG=0,totalG=0,bigCount=0,regCount=0,spinning=false,stopped=[true,true,true],pos=[0,2,4],raf=0,last=0,audio=null,noise=null;
+const cellH=()=>reels[0].clientHeight/3;
+function build(){strips.forEach((s,r)=>{s.innerHTML="";for(let k=0;k<40;k++){let d=document.createElement("div");d.className="cell";d.textContent=symbols[(k+r*2)%symbols.length];s.appendChild(d)}});render()}
+function render(){let h=cellH();strips.forEach((s,i)=>s.style.transform=`translateY(${-((pos[i]%32)+.02)*h}px)`)}
+function stats(){ $("credit").textContent=credit;$("medal").textContent=credit;$("bet").textContent=bet;$("payout").textContent=payout;$("currentG").textContent=currentG;$("totalG").textContent=totalG;$("bigCount").textContent=bigCount;$("regCount").textContent=regCount;let n=bigCount+regCount;$("rate").textContent=n?`1/${Math.max(1,Math.round(totalG/n))}`:"0/0"}
+function ready(){try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume()}catch(e){}}
+function tone(f,d=.08,v=.04,type="square",delay=0){try{ready();let t=audio.currentTime+delay,o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+d)}catch(e){}}
+function burst(d=.05,v=.04){try{ready();let b=audio.createBuffer(1,audio.sampleRate*d,audio.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=(Math.random()*2-1)*(1-i/x.length);let s=audio.createBufferSource(),g=audio.createGain();s.buffer=b;g.gain.value=v;s.connect(g);g.connect(audio.destination);s.start()}catch(e){}}
+function guitar(){ready();[82.4,123.5,164.8].forEach((f,j)=>tone(f,.45,j? .035:.065,"sawtooth"));burst(.08,.035)}
+function spinNoise(){try{ready();let b=audio.createBuffer(1,audio.sampleRate,audio.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;let s=audio.createBufferSource(),f=audio.createBiquadFilter(),g=audio.createGain();s.buffer=b;s.loop=true;f.type="bandpass";f.frequency.value=600;g.gain.value=.012;s.connect(f);f.connect(g);g.connect(audio.destination);s.start();noise=s}catch(e){}}
+function stopNoise(){try{if(noise){noise.stop();noise=null}}catch(e){}}
+$("max").addEventListener("click",()=>{ready();if(spinning)return;if(credit<3){$("msg").textContent="メダルを追加してね";return}credit-=3;bet=3;payout=0;$("lever").disabled=false;$("max").disabled=true;tone(160,.04,.035);stats()});
+$("add").addEventListener("click",()=>{ready();credit+=50;tone(220,.05,.035);tone(330,.05,.03,"square",.05);$("msg").textContent="メダル＋50枚";stats()});
+$("lever").addEventListener("click",()=>{if(spinning||bet!==3)return;guitar();setTimeout(spinNoise,80);spinning=true;stopped=[false,false,false];stops.forEach(b=>b.disabled=false);$("lever").disabled=true;currentG++;totalG++;$("msg").textContent="STOP！";last=performance.now();raf=requestAnimationFrame(loop);stats()});
+function loop(t){let dt=Math.min(40,t-last);last=t;for(let i=0;i<3;i++)if(!stopped[i])pos[i]=(pos[i]+dt*.018*(1+i*.05))%32;render();if(spinning)raf=requestAnimationFrame(loop)}
+stops.forEach((b,i)=>b.addEventListener("click",()=>{if(!spinning||stopped[i])return;stopped[i]=true;pos[i]=Math.round(pos[i]);b.disabled=true;burst(.04,.055);tone(105+i*9,.045,.04);render();if(stopped.every(Boolean))finish()}));
+function center(i){return symbols[(Math.round(pos[i])+1+i*2)%symbols.length]}
+function finish(){spinning=false;cancelAnimationFrame(raf);stopNoise();let a=[center(0),center(1),center(2)],win=0,label="";if(a[0]===a[1]&&a[1]===a[2]){if(a[0]==="7️⃣"){win=30;label="BIG BONUS";bigCount++}else if(a[0]==="🐈‍⬛"){win=12;label="BLACK CAT BONUS";regCount++}else if(a[0]==="🎸"){win=15;label="ROCK BONUS";regCount++}else{win=6;label="BONUS";regCount++}}else if(a.filter(x=>x==="🍒").length>=2){win=3;label="CHERRY"}
+payout=win;credit+=win;if(win){currentG=0;$("msg").textContent=`${label} +${win}枚`;[330,440,550].forEach((f,j)=>tone(f,.1,.04,"square",j*.07));if(label==="BIG BONUS"){let fx=$("fx");fx.classList.add("on");if(navigator.vibrate)navigator.vibrate([80,50,160]);setTimeout(()=>{guitar();tone(65,.5,.08,"sawtooth")},180);setTimeout(()=>fx.classList.remove("on"),2600)}}else $("msg").textContent="もう一度！";
+bet=0;$("max").disabled=false;stats()}
+
+const rootStyle=document.documentElement.style;
+const settingsPanel=$("settingsPanel");
+$("settingsToggle").addEventListener("click",()=>settingsPanel.classList.toggle("open"));
+const sizeDefs=[
+ ["sizeWhole","outWhole","--machine-w","px"],
+ ["sizeReel","outReel","--reel-h","px"],
+ ["sizeSymbol","outSymbol","--symbol-size","px"],
+ ["sizeButton","outButton","--control-h","px"]
+];
+function applySizes(){
+ sizeDefs.forEach(([id,out,v,u])=>{let n=parseInt($(id).value,10);rootStyle.setProperty(v,n+u);$(out).value=n});
+ render();
+}
+sizeDefs.forEach(([id])=>$(id).addEventListener("input",applySizes));
+$("resetSize").addEventListener("click",()=>{
+ const vals=[350,64,38,49];
+ sizeDefs.forEach(([id],i)=>$(id).value=vals[i]);
+ applySizes();
+});
+
+build();stats();
+})();
+</script></body></html>
